@@ -10,7 +10,7 @@
 
 # Scala-related
 # ===
-
+*/project/metals.sbt
 */project/*-shim.sbt
 */project/project/
 */project/target/
