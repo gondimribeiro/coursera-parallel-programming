@@ -38,10 +38,31 @@ class Img(val width: Int, val height: Int, private val data: Array[RGBA]):
 
 /** Computes the blurred RGBA value of a single pixel of the input image. */
 def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA =
-
-  // TODO implement using while loops
-  ???
-
+  var sum: Array[Int] = Array(0, 0, 0, 0)
+  var count = 0
+  for (dx <- -radius to radius)
+    for (dy <- -radius to radius) {
+      val newX = x + dx
+      val newY = y + dy
+      val isValidX = newX >= 0 && newX < src.width
+      val isValidY = newY >= 0 && newY < src.height
+      if (isValidX && isValidY) {
+        val neighbor = src(newX, newY)
+        sum(0) = sum(0) + red(neighbor)
+        sum(1) = sum(1) + green(neighbor)
+        sum(2) = sum(2) + blue(neighbor)
+        sum(3) = sum(3) + alpha(neighbor)
+        count += 1
+      }
+    }
+  
+  rgba(
+    sum(0) / count,
+    sum(1) / count,
+    sum(2) / count,
+    sum(3) / count
+  )
+  
 val forkJoinPool = ForkJoinPool()
 
 abstract class TaskScheduler:
