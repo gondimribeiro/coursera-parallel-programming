@@ -26,9 +26,10 @@ class ReductionsSuite extends munit.FunSuite:
   import ParallelCountChange.*
 
   test("countChange should return 0 for money < 0") {
-    def check(money: Int, coins: List[Int]) =
+    def check(money: Int, coins: List[Int]) = {
       assert(countChange(money, coins) == 0,
         s"countChang($money, _) should be 0")
+    }
 
     check(-1, List())
     check(-1, List(1, 2, 3))
@@ -84,17 +85,25 @@ class ReductionsSuite extends munit.FunSuite:
   import ParallelParenthesesBalancing.*
 
   test("balance should work for empty string") {
-    def check(input: String, expected: Boolean) =
+    def check(input: String, expected: Boolean) = {
       assert(balance(input.toArray) == expected,
         s"balance($input) should be $expected")
+
+      assert(parBalance(input.toArray, 1) == expected,
+        s"parBalance($input) should be $expected")
+    }
 
     check("", true)
   }
 
   test("balance should work for string of length 1") {
-    def check(input: String, expected: Boolean) =
+    def check(input: String, expected: Boolean) = {
       assert(balance(input.toArray) == expected,
         s"balance($input) should be $expected")
+
+      assert(parBalance(input.toArray, 1) == expected,
+        s"parBalance($input) should be $expected")
+    }
 
     check("(", false)
     check(")", false)
@@ -102,9 +111,13 @@ class ReductionsSuite extends munit.FunSuite:
   }
 
   test("balance should work for string of length 2") {
-    def check(input: String, expected: Boolean) =
+    def check(input: String, expected: Boolean) = {
       assert(balance(input.toArray) == expected,
         s"balance($input) should be $expected")
+
+      assert(parBalance(input.toArray, 1) == expected,
+        s"parBalance($input) should be $expected")
+    }
 
     check("()", true)
     check(")(", false)
@@ -115,8 +128,6 @@ class ReductionsSuite extends munit.FunSuite:
     check("(.", false)
     check(").", false)
   }
-
-
+  
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds
-

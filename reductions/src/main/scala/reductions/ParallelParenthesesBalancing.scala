@@ -20,9 +20,11 @@ object ParallelParenthesesBalancingRunner:
     val length = 100000000
     val chars = new Array[Char](length)
     val threshold = 10000
+
     val seqtime = standardConfig measure {
       seqResult = ParallelParenthesesBalancing.balance(chars)
     }
+
     println(s"sequential result = $seqResult")
     println(s"sequential balancing time: $seqtime")
 
@@ -37,22 +39,67 @@ object ParallelParenthesesBalancing extends ParallelParenthesesBalancingInterfac
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
-  def balance(chars: Array[Char]): Boolean =
-    ???
+  def balance(chars: Array[Char]): Boolean = {
+    var i: Int = 0
+    var count: Int = 0
+    while (i < chars.length && count >= 0) {
+      if (chars(i) == '(') count = count + 1
+      if (chars(i) == ')') count = count - 1
+      i = i + 1
+    }
+  
+    count == 0
+  }
 
   /** Returns `true` iff the parentheses in the input `chars` are balanced.
    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean =
-
-    def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
-      ???
+    
+    def traverse(from: Int, until: Int): (Int, Int) = {
+      var openCount: Int = 0
+      var closeCount: Int = 0
+      
+      var i: Int = from
+      while (i < until) {
+        if (chars(i) == '(') openCount = openCount + 1
+        else if (openCount > 0 && chars(i) == ')') openCount = openCount - 1
+        else if (chars(i) == ')') closeCount = closeCount - 1
+        i = i + 1
+      }
+      
+      (closeCount, openCount)
     }
 
-    def reduce(from: Int, until: Int) /*: ???*/ = {
-      ???
+    def reduce(from: Int, until: Int): (Int, Int) = {
+     
+      if (until - from <= threshold) {
+        val (closeCount, openCount) = traverse(from, until)
+        (closeCount, openCount)
+      }
+        
+      else {
+        val mid = from + (until - from) / 2
+
+        val (left, right) = parallel(reduce(from, mid), reduce(mid, until))
+        val (leftCloseCount, leftOpenCount) = left
+        val (rightCloseCount, rightOpenCount) = right
+        
+        if (leftOpenCount + rightCloseCount < 0) {
+          val closeCount = leftOpenCount + rightCloseCount + leftCloseCount
+          val openCount = rightOpenCount
+
+          (closeCount, openCount)
+        }
+        else {
+          val closeCount = leftCloseCount
+          val openCount = leftOpenCount + rightCloseCount + rightOpenCount
+
+          (closeCount, openCount)
+        }
+      }
     }
 
-    reduce(0, chars.length) == ???
+    reduce(0, chars.length) == (0, 0)
 
   // For those who want more:
   // Prove that your reduction operator is associative!
