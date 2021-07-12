@@ -14,10 +14,23 @@ class ReductionsSuite extends munit.FunSuite:
     val output = new Array[Float](4)
     lineOfSight(Array[Float](0f, 1f, 8f, 9f), output)
     assertEquals(output.toList, List(0f, 1f, 4f, 4f))
+
+    val parOutput1 = new Array[Float](4)
+    parLineOfSight(Array[Float](0f, 1f, 8f, 9f), parOutput1, 1)
+    assertEquals(parOutput1.toList, List(0f, 1f, 4f, 4f))
+
+    val parOutput2 = new Array[Float](4)
+    parLineOfSight(Array[Float](0f, 1f, 8f, 9f), parOutput2, 2)
+    assertEquals(parOutput2.toList, List(0f, 1f, 4f, 4f))
+
+    val parOutput3 = new Array[Float](4)
+    parLineOfSight(Array[Float](0f, 1f, 8f, 9f), parOutput3, 3)
+    assertEquals(parOutput3.toList, List(0f, 1f, 4f, 4f))
+
+    val parOutput4 = new Array[Float](4)
+    parLineOfSight(Array[Float](0f, 1f, 8f, 9f), parOutput4, 4)
+    assertEquals(parOutput4.toList, List(0f, 1f, 4f, 4f))
   }
-
-
-
 
   /*******************************
    * PARALLEL COUNT CHANGE SUITE *
