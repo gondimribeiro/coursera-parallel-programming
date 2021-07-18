@@ -53,6 +53,21 @@ class BarnesHutSuite extends munit.FunSuite:
     assert(quad.total == 1, s"${quad.total} should be 1")
   }
 
+  test("Fork with 3 empty quadrants and 1 leaf (nw)") {
+    val nw = Empty(17.5f, 27.5f, 5f)
+    val ne = Empty(22.5f, 27.5f, 5f)
+    val sw = Empty(17.5f, 32.5f, 5f)
+    val se = Empty(22.5f, 32.5f, 5f)
+    val quad = Fork(nw, ne, sw, se)
+
+    assert(quad.centerX == 20f, s"${quad.centerX} should be 20f")
+    assert(quad.centerY == 30f, s"${quad.centerY} should be 30f")
+    assert(quad.mass ~= 0f, s"${quad.mass} should be 0f")
+    assert(quad.massX ~= 20f, s"${quad.massX} should be 20f")
+    assert(quad.massY ~= 30f, s"${quad.massY} should be 30f")
+    assert(quad.total == 0, s"${quad.total} should be 0")
+  }
+
   test("Empty.insert(b) should return a Leaf with only that body (2pts)") {
     val quad = Empty(51f, 46.3f, 5f)
     val b = Body(3f, 54f, 46f, 0f, 0f)

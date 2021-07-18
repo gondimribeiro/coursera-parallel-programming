@@ -9,7 +9,7 @@ class SimulationCanvas(val model: SimulationModel) extends JComponent:
 
   val MAX_RES = 3000
 
-  val pixels = Array[Int](MAX_RES * MAX_RES)
+  val pixels = Array.ofDim[Int](MAX_RES * MAX_RES)
 
   override def paintComponent(gcan: Graphics) =
     super.paintComponent(gcan)
