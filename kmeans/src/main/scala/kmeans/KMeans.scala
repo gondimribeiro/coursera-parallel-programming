@@ -9,7 +9,6 @@ import org.scalameter.*
 import java.util.concurrent.ForkJoinPool
 
 class KMeans extends KMeansInterface:
-
   def generatePoints(k: Int, num: Int): ParSeq[Point] =
     val randx = Random(1)
     val randy = Random(3)
@@ -40,8 +39,13 @@ class KMeans extends KMeansInterface:
     closest
 
   def classify(points: ParSeq[Point], means: ParSeq[Point]): ParMap[Point, ParSeq[Point]] =
-    ???
-
+    val mapMeans = points.groupBy(findClosest(_, means))
+    
+    means
+      .map(m => (m, if (mapMeans.contains(m)) mapMeans(m) else ParSeq[Point]()))
+      .toMap
+    
+  
   def findAverage(oldMean: Point, points: ParSeq[Point]): Point = if points.isEmpty then oldMean else
     var x = 0.0
     var y = 0.0
@@ -54,14 +58,19 @@ class KMeans extends KMeansInterface:
     Point(x / points.length, y / points.length, z / points.length)
 
   def update(classified: ParMap[Point, ParSeq[Point]], oldMeans: ParSeq[Point]): ParSeq[Point] =
-    ???
+    oldMeans.map(mean => findAverage(mean, classified(mean)))
 
   def converged(eta: Double, oldMeans: ParSeq[Point], newMeans: ParSeq[Point]): Boolean =
-    ???
+    if (oldMeans.isEmpty) true
+    else oldMeans.zip(newMeans).map((p1, p2) => p1.squareDistance(p2) <= eta).forall(t => t)
 
   @tailrec
   final def kMeans(points: ParSeq[Point], means: ParSeq[Point], eta: Double): ParSeq[Point] =
-    if (???) kMeans(???, ???, ???) else ??? // your implementation need to be tail recursive
+    val classified = classify(points, means)
+    val newMeans = update(classified, means)
+
+    if (converged(eta, means, newMeans)) newMeans
+    else kMeans(points, newMeans, eta)
 
 /** Describes one point in three-dimensional space.
  *
